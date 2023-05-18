@@ -20,7 +20,6 @@ const TableUsers = (props) => {
       setListUser(res.data);
       setTotalPage(res.total_pages);
       setPage(res.page);
-      console.log(res.total_pages);
     }
   };
 
