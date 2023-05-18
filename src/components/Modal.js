@@ -2,16 +2,24 @@ import React from "react";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { createUser } from "../service/UserService.js";
+import { toast } from "react-toastify";
 
-const MyModal = (props) => {
-  const { show, handleClose } = props;
+const ModalAddNew = (props) => {
+  const { show, handleClose, handleUpdateUser } = props;
   const [name, setName] = useState("");
   const [job, setJob] = useState("");
 
-  const handleSaveChange = () => {
-    console.log("check state: ", "name: ", name, "job", job);
-    setName("")
-    setJob("")
+  const handleSaveChange = async () => {
+    const res = await createUser(name, job);
+    if (res && res.id) {
+      setName("");
+      setJob("");
+      handleUpdateUser({ first_name: name, id: res.id });
+      handleClose();
+      toast.success("Successfully added new user");
+    }
+    console.log(res);
   };
 
   return (
@@ -21,26 +29,26 @@ const MyModal = (props) => {
           <Modal.Title>Add New User</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div class="mb-3">
-            <label htmlFor="formGroupExampleInput" class="form-label">
+          <div className="mb-3">
+            <label htmlFor="formGroupExampleInput" className="form-label">
               Name
             </label>
             <input
               type="text"
-              class="form-control"
+              className="form-control"
               id="formGroupExampleInput"
               placeholder="Enter name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <div class="mb-3">
-            <label htmlFor="formGroupExampleInput2" class="form-label">
+          <div className="mb-3">
+            <label htmlFor="formGroupExampleInput2" className="form-label">
               Job
             </label>
             <input
               type="text"
-              class="form-control"
+              className="form-control"
               id="formGroupExampleInput2"
               placeholder="Enter job"
               value={job}
@@ -61,4 +69,4 @@ const MyModal = (props) => {
   );
 };
 
-export default MyModal;
+export default ModalAddNew;

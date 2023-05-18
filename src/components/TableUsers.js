@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import "../App.scss";
 import Table from "react-bootstrap/Table";
 import { fetchAllUsers } from "../service/UserService";
+import ModalAddNew from "./Modal.js";
 
 const TableUsers = (props) => {
   const [listUsers, setListUser] = useState("");
   const [totalPage, setTotalPage] = useState(0);
   const [page, setPage] = useState(0);
+  const handleClose = () => setIsShow(false);
 
   useEffect(() => {
     getUsers(1);
@@ -28,8 +32,22 @@ const TableUsers = (props) => {
     getUsers(+(event.selected + 1));
   };
 
+  const [isShow, setIsShow] = useState(false);
+
+  const handleUpdateUser = (user) => {
+    setListUser([user, ...listUsers]);
+  };
+
   return (
     <>
+      <div className="d-flex justify-content-between my-3">
+        <span>
+          <h4>List Users:</h4>
+        </span>
+        <button onClick={() => setIsShow(true)} className="btn btn-success">
+          Add new user
+        </button>
+      </div>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -77,6 +95,24 @@ const TableUsers = (props) => {
         marginPagesDisplayed={2}
         containerClassName="pagination"
         activeClassName="active"
+      />
+      <ModalAddNew
+        show={isShow}
+        handleClose={handleClose}
+        handleUpdateUser={handleUpdateUser}
+      />
+
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
       />
     </>
   );
