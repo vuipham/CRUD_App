@@ -6,7 +6,7 @@ import { createUser } from "../service/UserService.js";
 import { toast } from "react-toastify";
 
 const ModalAddNew = (props) => {
-  const { show, handleClose, handleUpdateUser } = props;
+  const { show, handleCloseModalAddNew, handleUpdateUser } = props;
   const [name, setName] = useState("");
   const [job, setJob] = useState("");
 
@@ -16,7 +16,7 @@ const ModalAddNew = (props) => {
       setName("");
       setJob("");
       handleUpdateUser({ first_name: name, id: res.id });
-      handleClose();
+      handleCloseModalAddNew();
       toast.success("Successfully added new user");
     }
     console.log(res);
@@ -24,7 +24,7 @@ const ModalAddNew = (props) => {
 
   return (
     <>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleCloseModalAddNew}>
         <Modal.Header closeButton>
           <Modal.Title>Add New User</Modal.Title>
         </Modal.Header>
@@ -57,7 +57,7 @@ const ModalAddNew = (props) => {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleCloseModalAddNew}>
             Close
           </Button>
           <Button variant="primary" onClick={handleSaveChange}>

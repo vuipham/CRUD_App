@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import _ from "lodash"
 
 import "../App.scss";
 import Table from "react-bootstrap/Table";
 import { fetchAllUsers } from "../service/UserService";
-import ModalAddNew from "./Modal.js";
+import ModalAddNew from "./ModalAddNew.js";
+import ModalEdit from "./ModalEdit.js";
 
 const TableUsers = (props) => {
   const [listUsers, setListUser] = useState("");
   const [totalPage, setTotalPage] = useState(0);
   const [page, setPage] = useState(0);
-  const handleClose = () => setIsShow(false);
+  const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
+  const [isShowModalEdit, setIsShowModalEdit] = useState(false);
+  const [dataUserEdit, setDataUserEdit] = useState({});
 
   useEffect(() => {
     getUsers(1);
   }, []);
+
+  const handleCloseModalAddNew = () => setIsShowModalAddNew(false);
+  const handleCloseModalEdit = () => setIsShowModalEdit(false);
 
   const getUsers = async (page) => {
     const res = await fetchAllUsers(page);
@@ -32,10 +39,20 @@ const TableUsers = (props) => {
     getUsers(+(event.selected + 1));
   };
 
-  const [isShow, setIsShow] = useState(false);
-
   const handleUpdateUser = (user) => {
     setListUser([user, ...listUsers]);
+  };
+
+  const handleEditUser = (user) => {
+    setDataUserEdit(user);
+    setIsShowModalEdit(true);
+  };
+
+  const handleEditUserFromModal = (user) => {
+    let cloneListUsers = _.cloneDeep(listUsers)
+    let index = listUsers.findIndex(item => item.id === user.id)
+    cloneListUsers[index].first_name = user.first_name
+    setListUser(cloneListUsers)
   };
 
   return (
@@ -44,7 +61,10 @@ const TableUsers = (props) => {
         <span>
           <h4>List Users:</h4>
         </span>
-        <button onClick={() => setIsShow(true)} className="btn btn-success">
+        <button
+          onClick={() => setIsShowModalAddNew(true)}
+          className="btn btn-success"
+        >
           Add new user
         </button>
       </div>
@@ -70,6 +90,15 @@ const TableUsers = (props) => {
                   <td>{item.last_name}</td>
                   <td>
                     <img src={item.avatar} alt="Mô tả ảnh" />
+                  </td>
+                  <td className="">
+                    <button
+                      className="btn btn-warning mx-3 mt-5 align-item-center"
+                      onClick={() => handleEditUser(item)}
+                    >
+                      Edit
+                    </button>
+                    <button className="btn btn-danger mt-5">Delete</button>
                   </td>
                 </tr>
               );
@@ -97,9 +126,16 @@ const TableUsers = (props) => {
         activeClassName="active"
       />
       <ModalAddNew
-        show={isShow}
-        handleClose={handleClose}
+        show={isShowModalAddNew}
+        handleCloseModalAddNew={handleCloseModalAddNew}
         handleUpdateUser={handleUpdateUser}
+      />
+
+      <ModalEdit
+        show={isShowModalEdit}
+        handleCloseModalEdit={handleCloseModalEdit}
+        dataUserEdit={dataUserEdit}
+        handleEditUserFromModal={handleEditUserFromModal}
       />
 
       <ToastContainer

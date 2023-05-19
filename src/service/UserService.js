@@ -5,7 +5,11 @@ const fetchAllUsers = (page) => {
 };
 
 const createUser = (name, job) => {
-  return instance.post('/api/users', {name, job});
+  return instance.post("/api/users", { name, job });
 };
 
-export { fetchAllUsers, createUser };
+const editUser = (name, job) => {
+  return instance.put("/api/users/", { name, job });
+};
+
+export { fetchAllUsers, createUser, editUser };
