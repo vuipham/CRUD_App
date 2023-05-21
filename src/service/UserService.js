@@ -12,4 +12,8 @@ const editUser = (name, job) => {
   return instance.put("/api/users/", { name, job });
 };
 
-export { fetchAllUsers, createUser, editUser };
+const deleteUser = (userId) => {
+  return instance.delete(`/api/users/${userId}`);
+};
+
+export { fetchAllUsers, createUser, editUser, deleteUser };

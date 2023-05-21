@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import _ from "lodash"
+import _ from "lodash";
 
 import "../App.scss";
 import Table from "react-bootstrap/Table";
 import { fetchAllUsers } from "../service/UserService";
 import ModalAddNew from "./ModalAddNew.js";
 import ModalEdit from "./ModalEdit.js";
+import ModalComfirm from "./ModalComfirm";
 
 const TableUsers = (props) => {
   const [listUsers, setListUser] = useState("");
@@ -16,7 +17,9 @@ const TableUsers = (props) => {
   const [page, setPage] = useState(0);
   const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
   const [isShowModalEdit, setIsShowModalEdit] = useState(false);
+  const [isShowModalComfirm, setIsShowModalComfirm] = useState(false);
   const [dataUserEdit, setDataUserEdit] = useState({});
+  const [dataUserDelete, setDataUserDelete] = useState({});
 
   useEffect(() => {
     getUsers(1);
@@ -24,6 +27,7 @@ const TableUsers = (props) => {
 
   const handleCloseModalAddNew = () => setIsShowModalAddNew(false);
   const handleCloseModalEdit = () => setIsShowModalEdit(false);
+  const handleCloseModalComfirm = () => setIsShowModalComfirm(false);
 
   const getUsers = async (page) => {
     const res = await fetchAllUsers(page);
@@ -48,11 +52,22 @@ const TableUsers = (props) => {
     setIsShowModalEdit(true);
   };
 
+  const handleDeleteUser = (user) => {
+    setIsShowModalComfirm(true);
+    setDataUserDelete(user);
+  };
+
   const handleEditUserFromModal = (user) => {
-    let cloneListUsers = _.cloneDeep(listUsers)
-    let index = listUsers.findIndex(item => item.id === user.id)
-    cloneListUsers[index].first_name = user.first_name
-    setListUser(cloneListUsers)
+    let cloneListUsers = _.cloneDeep(listUsers);
+    let index = listUsers.findIndex((item) => item.id === user.id);
+    cloneListUsers[index].first_name = user.first_name;
+    setListUser(cloneListUsers);
+  };
+
+  const handleDeleteUserFromModal = (user) => {
+    let cloneListUsers = _.cloneDeep(listUsers);
+    cloneListUsers = cloneListUsers.filter(item => item.id !== user.id)
+    setListUser(cloneListUsers);
   };
 
   return (
@@ -98,7 +113,12 @@ const TableUsers = (props) => {
                     >
                       Edit
                     </button>
-                    <button className="btn btn-danger mt-5">Delete</button>
+                    <button
+                      className="btn btn-danger mt-5"
+                      onClick={() => handleDeleteUser(item)}
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               );
@@ -136,6 +156,13 @@ const TableUsers = (props) => {
         handleCloseModalEdit={handleCloseModalEdit}
         dataUserEdit={dataUserEdit}
         handleEditUserFromModal={handleEditUserFromModal}
+      />
+
+      <ModalComfirm
+        show={isShowModalComfirm}
+        handleCloseModalComfirm={handleCloseModalComfirm}
+        dataUserDelete={dataUserDelete}
+        handleDeleteUserFromModal={handleDeleteUserFromModal}
       />
 
       <ToastContainer

@@ -20,7 +20,7 @@ const ModalEdit = (props) => {
         id: dataUserEdit.id,
       });
       handleCloseModalEdit();
-      toast.success('Edit user successfully!')
+      toast.success("Edit user successfully!");
     } else {
       console.log(res);
     }
@@ -34,7 +34,12 @@ const ModalEdit = (props) => {
 
   return (
     <>
-      <Modal show={show} onHide={handleCloseModalEdit}>
+      <Modal
+        show={show}
+        onHide={handleCloseModalEdit}
+        backdrop="static"
+        keyboard={false}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Edit An User</Modal.Title>
         </Modal.Header>
