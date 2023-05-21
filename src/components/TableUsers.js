@@ -20,6 +20,8 @@ const TableUsers = (props) => {
   const [isShowModalComfirm, setIsShowModalComfirm] = useState(false);
   const [dataUserEdit, setDataUserEdit] = useState({});
   const [dataUserDelete, setDataUserDelete] = useState({});
+  const [sortBy, setSortBy] = useState("esc");
+  const [sortField, setSortField] = useState("");
 
   useEffect(() => {
     getUsers(1);
@@ -70,6 +72,15 @@ const TableUsers = (props) => {
     setListUser(cloneListUsers);
   };
 
+  const handleSort = (sortField, sortBy) => {
+    setSortBy(sortBy);
+    setSortField(sortField);
+
+    let cloneListUsers = _.cloneDeep(listUsers);
+    cloneListUsers = _.orderBy(cloneListUsers, [sortField], [sortBy]);
+    setListUser(cloneListUsers);
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between my-3">
@@ -86,11 +97,42 @@ const TableUsers = (props) => {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Email</th>
-            <th>First Name</th>
+            <th>
+              <div className="d-flex justify-content-between">
+                ID
+                <div>
+                  <i
+                    className="fa-solid fa-arrow-up mx-2"
+                    onClick={() => handleSort("id", "esc")}
+                  ></i>
+                  <i
+                    className="fa-solid fa-arrow-down"
+                    onClick={() => handleSort("id", "desc")}
+                  ></i>
+                </div>
+              </div>
+            </th>
+            <th>
+              <div className="d-flex justify-content-between">Email</div>
+            </th>
+            <th>
+              <div className="d-flex justify-content-between">
+                First name
+                <div>
+                  <i
+                    className="fa-solid fa-arrow-up mx-2"
+                    onClick={() => handleSort("first_name", "esc")}
+                  ></i>
+                  <i
+                    className="fa-solid fa-arrow-down"
+                    onClick={() => handleSort("first_name", "desc")}
+                  ></i>
+                </div>
+              </div>
+            </th>
             <th>Last Name</th>
             <th>Avartar</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
