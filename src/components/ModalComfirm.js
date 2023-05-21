@@ -1,10 +1,8 @@
 import React from "react";
-import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { deleteUser } from "../service/UserService.js";
 import { toast } from "react-toastify";
-import axios from "axios";
 
 const ModalComfirm = (props) => {
   const {
