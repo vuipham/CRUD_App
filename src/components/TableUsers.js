@@ -3,6 +3,7 @@ import ReactPaginate from "react-paginate";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
+import { debounce } from "lodash";
 
 import "../App.scss";
 import Table from "react-bootstrap/Table";
@@ -22,6 +23,7 @@ const TableUsers = (props) => {
   const [dataUserDelete, setDataUserDelete] = useState({});
   const [sortBy, setSortBy] = useState("esc");
   const [sortField, setSortField] = useState("");
+  const [keyword, setKeyword] = useState("");
 
   useEffect(() => {
     getUsers(1);
@@ -81,6 +83,19 @@ const TableUsers = (props) => {
     setListUser(cloneListUsers);
   };
 
+  const handleSearch = debounce((e) => {
+    let term = e.target.value;
+    if (term) {
+      let cloneListUsers = _.cloneDeep(listUsers);
+      cloneListUsers = cloneListUsers.filter((item) =>
+        item.email.includes(term)
+      );
+      setListUser(cloneListUsers);
+    } else {
+      getUsers(1);
+    }
+  }, 500);
+
   return (
     <>
       <div className="d-flex justify-content-between my-3">
@@ -93,6 +108,14 @@ const TableUsers = (props) => {
         >
           Add new user
         </button>
+      </div>
+      <div className="mb-4">
+        <input
+          // value={keyword}
+          onChange={(e) => handleSearch(e)}
+          style={{ width: "300px", padding: "3px 5px" }}
+          placeholder="Search by email..."
+        />
       </div>
       <Table striped bordered hover>
         <thead>
