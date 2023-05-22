@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
 import { debounce } from "lodash";
+import { CSVLink, CSVDownload } from "react-csv";
 
 import "../App.scss";
 import Table from "react-bootstrap/Table";
@@ -23,7 +24,8 @@ const TableUsers = (props) => {
   const [dataUserDelete, setDataUserDelete] = useState({});
   const [sortBy, setSortBy] = useState("esc");
   const [sortField, setSortField] = useState("");
-  const [keyword, setKeyword] = useState("");
+  // const [keyword, setKeyword] = useState("");
+  const [exportData, setExportData] = useState([]);
 
   useEffect(() => {
     getUsers(1);
@@ -96,18 +98,52 @@ const TableUsers = (props) => {
     }
   }, 500);
 
+  const getUsersExport = (event, done) => {
+    let result = [];
+    if (listUsers && listUsers.length > 0) {
+      result.push(["Id", "Email", "First name", "Last name"]);
+      listUsers.map((item, index) => {
+        let arr = [];
+        arr[0] = item.id;
+        arr[1] = item.email;
+        arr[2] = item.first_name;
+        arr[3] = item.last_name;
+        result.push(arr);
+      });
+      setExportData(result);
+      done();
+    }
+  };
+
   return (
     <>
-      <div className="d-flex justify-content-between my-3">
-        <span>
-          <h4>List Users:</h4>
-        </span>
-        <button
-          onClick={() => setIsShowModalAddNew(true)}
-          className="btn btn-success"
-        >
-          Add new user
-        </button>
+      <div className="d-flex justify-content-between my-3 position-relative">
+        <div>
+          <span>
+            <h4>List Users:</h4>
+          </span>
+        </div>
+        <div className="position-absolute top-50 end-0">
+          <label htmlFor="test" className="btn btn-warning">
+            Import
+          </label>
+          <input id="test" type="file" hidden />
+          <CSVLink
+            data={exportData}
+            filename={"my-file.csv"}
+            className="btn btn-primary mx-2"
+            asyncOnClick={true}
+            onClick={getUsersExport}
+          >
+            Export
+          </CSVLink>
+          <button
+            onClick={() => setIsShowModalAddNew(true)}
+            className="btn btn-success"
+          >
+            Add new
+          </button>
+        </div>
       </div>
       <div className="mb-4">
         <input
