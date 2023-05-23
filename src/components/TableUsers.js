@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
 import { debounce } from "lodash";
 import { CSVLink, CSVDownload } from "react-csv";
+import Papa from "papaparse";
 
 import "../App.scss";
 import Table from "react-bootstrap/Table";
@@ -115,6 +116,53 @@ const TableUsers = (props) => {
     }
   };
 
+  const handleImportCSV = (event) => {
+    if (event.target && event.target.files && event.target.files[0]) {
+      let file = event.target.files[0];
+      if (file.type !== "text/csv") {
+        toast.error("Only accept csv files...");
+        return;
+      }
+
+      //Parse local CSV file
+      Papa.parse(file, {
+        // header: true,
+        complete: function (results) {
+          let rawCSV = results.data;
+          if (rawCSV.length > 0) {
+            if (rawCSV[0] && rawCSV[0].length === 3) {
+              if (
+                rawCSV[0][0] !== "email" ||
+                rawCSV[0][1] !== "first_name" ||
+                rawCSV[0][2] !== "last_name"
+              ) {
+                console.log(rawCSV);
+                toast.error("Wrong format Header CSV file !");
+              } else {
+                let result = [];
+                rawCSV.map((item, index) => {
+                  if (index > 0 && item.length === 3) {
+                    let obj = {};
+                    obj.email = item[0];
+                    obj.first_name = item[1];
+                    obj.last_name = item[2];
+                    result.push(obj);
+                  }
+                });
+                setListUser(result);
+              }
+            } else {
+              console.log(rawCSV[0]);
+              toast.error("Wrong format CSV file !");
+            }
+          }
+        },
+      });
+    } else {
+      toast.error("Not found data CSV file !....");
+    }
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between my-3 position-relative">
@@ -127,7 +175,7 @@ const TableUsers = (props) => {
           <label htmlFor="test" className="btn btn-warning">
             Import
           </label>
-          <input id="test" type="file" hidden />
+          <input id="test" type="file" onChange={(event) => handleImportCSV(event)} hidden />
           <CSVLink
             data={exportData}
             filename={"my-file.csv"}
