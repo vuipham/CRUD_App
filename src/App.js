@@ -6,6 +6,7 @@ import Container from "react-bootstrap/Container";
 import Header from "./components/Header.js";
 import Home from "./components/Home";
 import TableUsers from "./components/TableUsers.js";
+import Login from "./components/Login";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/users" element={<TableUsers />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </Container>
       </div>
