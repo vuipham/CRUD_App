@@ -16,4 +16,9 @@ const deleteUser = (userId) => {
   return instance.delete(`/api/users/${userId}`);
 };
 
-export { fetchAllUsers, createUser, editUser, deleteUser };
+const loginApi = (email, password) => {
+  return instance.post("/api/login", {email, password});
+};
+
+
+export { fetchAllUsers, createUser, editUser, deleteUser, loginApi };

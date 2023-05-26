@@ -1,5 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 import "./App.scss";
 import Container from "react-bootstrap/Container";
@@ -20,6 +21,18 @@ function App() {
             <Route path="/login" element={<Login />} />
           </Routes>
         </Container>
+        <ToastContainer
+          position="top-right"
+          autoClose={4000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </div>
     </>
   );
