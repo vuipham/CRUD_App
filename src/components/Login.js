@@ -1,23 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 import { loginApi } from "../service/UserService";
-import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useContext(UserContext);
+ 
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [loadingApi, setLoadingApi] = useState(false);
 
-  useEffect(() => {
-    let token = localStorage.getItem("token");
-    if (token) {
-      navigate("/");
-    }
-  }, []);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -28,18 +25,21 @@ const Login = () => {
 
     let res = await loginApi(email, password);
     if (res && res.token) {
-      localStorage.setItem("token", res.token);
+      login(email, res.token);
+      
       navigate("/");
     } else {
       // error
       if (res && res.status === 400) {
-        console.log("user not found");
         toast.error(res.data.error);
       }
       setLoadingApi(false);
-      console.log(res);
     }
   };
+
+  const handleGoBack = () => {
+    navigate("/")
+  }
 
   return (
     <>
@@ -83,7 +83,7 @@ const Login = () => {
           </button>
         </div>
         <div className="button-back">
-          <button>
+          <button onClick={handleGoBack}>
             <i className="fa-solid fa-chevron-left"></i>
             Go back
           </button>
