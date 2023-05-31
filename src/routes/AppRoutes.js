@@ -10,9 +10,6 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        {/* <PrivateRoute path="/users">
-          <TableUsers />
-        </PrivateRoute> */}
 
         <Route
           path="/users"

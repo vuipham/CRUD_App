@@ -1,8 +1,6 @@
-import { Routes, Route } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import Alert from "react-bootstrap/Alert";
-import Button from "react-bootstrap/Button";
 
 const PrivateRoute = (props) => {
   const { user } = useContext(UserContext);
@@ -17,7 +15,6 @@ const PrivateRoute = (props) => {
     );
   }
 
-  console.log(user);
   return <>{props.children}</>;
 };
 
